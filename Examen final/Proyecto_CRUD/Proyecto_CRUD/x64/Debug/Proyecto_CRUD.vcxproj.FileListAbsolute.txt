@@ -1,0 +1,6 @@
+C:\Users\josem\OneDrive\Escritorio\UMG\Semestre III\Programación I\ProyectoCRUD\Proyecto_CRUD\Proyecto_CRUD\x64\Debug\Proyecto_CRUD.vcxproj.AssemblyReference.cache
+C:\Users\josem\OneDrive\Escritorio\UMG\Semestre III\Programación I\ProyectoCRUD\Proyecto_CRUD\Proyecto_CRUD\x64\Debug\Proyecto_CRUD.vcxproj.SuggestedBindingRedirects.cache
+C:\Users\josem\OneDrive\Escritorio\UMG\Semestre III\Programación I\ProyectoCRUD\Proyecto_CRUD\Proyecto_CRUD\x64\Debug\Proyecto_CRUD.Form1.resources
+C:\Users\josem\OneDrive\Escritorio\UMG\Semestre III\Programación I\ProyectoCRUD\Proyecto_CRUD\Proyecto_CRUD\x64\Debug\Proyecto_CRUD.vcxproj.GenerateResource.cache
+C:\Users\josem\OneDrive\Escritorio\UMG\Semestre III\Programación I\ProyectoCRUD\Proyecto_CRUD\Proyecto_CRUD\x64\Debug\Proyecto_CRUD.vcxproj.CopyComplete
+C:\Users\josem\OneDrive\Escritorio\UMG\Semestre III\Programación I\ProyectoCRUD\Proyecto_CRUD\Proyecto_CRUD\x64\Debug\Proyecto_CRUD.MenuCRUD.resources

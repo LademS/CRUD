@@ -1,0 +1,206 @@
+MenuCRUD.h:
+
+#pragma endregion
+	private: System::Void textBox3_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+private: System::Void MenuCRUD_Load(System::Object^ sender, System::EventArgs^ e) {
+	this->Consulta();
+}
+
+public: void Consulta() //metodo publico que mostrara los datos
+{
+	this->data->AbrirConexion(); //abrimos la conexión para llenar la tabla
+	this->data_grid->DataSource = this->data->getData(); //nos indica de que método se obtendrá la información para la tabla
+	this->data_grid2->DataSource = this->data->getData();
+	this->data_grid3->DataSource = this->data->getData();
+	this->data->CerrarConexion(); //cerramos la conexion luego de llenar la tabla
+}
+
+
+private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->data->AbrirConexion(); //abrimos la conexión para llenar la tabla
+	this->data->Insertar(this->txt_nombre->Text, this->txt_marca->Text, this->txt_serie->Text, this->txt_anio->Text, this->txt_placa->Text,this->textBox1->Text); //llamamos a la funcion insertar y le indicamos de donde sacara los datos para la tabla
+	this->data->CerrarConexion(); //cerramos la conexion luego de llenar la tabla
+	this->Consulta();
+	this->txt_nombre->Clear(); //se limpian los textbox 
+	this->txt_marca->Clear();
+	this->txt_anio->Clear();
+	this->txt_placa->Clear();
+	this->txt_serie->Clear();
+}
+
+
+
+
+private: System::Void dataGridView1_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+	String^ id = Convert::ToString(data_grid2->SelectedRows[0]->Cells[0]->Value); //seleccionamos los valores de la fila completa
+	String^ nombre = Convert::ToString(data_grid2->SelectedRows[0]->Cells[1]->Value);
+	String^ marca = Convert::ToString(data_grid2->SelectedRows[0]->Cells[2]->Value);
+	String^ serie = Convert::ToString(data_grid2->SelectedRows[0]->Cells[3]->Value);
+	String^ anio = Convert::ToString(data_grid2->SelectedRows[0]->Cells[4]->Value);
+	String^ placa = Convert::ToString(data_grid2->SelectedRows[0]->Cells[5]->Value);
+	this->txt_id_mod->Text = id; //asignamos los valores de la fila a sus respectivas textbox
+	this->txt_nombre_mod->Text = nombre;
+	this->txt_marca_mod->Text = marca;
+	this->txt_serie_mod->Text = serie;
+	this->txt_anio_mod->Text = anio;
+	this->txt_placa_mod->Text = placa;
+	
+}
+private: System::Void data_grid_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+}
+private: System::Void textBox3_TextChanged_1(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void btn_modificar_Click(System::Object^ sender, System::EventArgs^ e) {
+	data->AbrirConexion();
+	data->Modificar(this->txt_nombre_mod->Text, this->txt_marca_mod->Text, this->txt_serie_mod->Text, this->txt_anio_mod->Text, this->txt_placa_mod->Text, this->txt_id_mod->Text); //llamamos a la funcion modificar y le indicamos de donde sacara los datos para la tabla
+	data->CerrarConexion();
+	this->Consulta();
+	this->txt_nombre_mod->Clear(); //se limpian los textbox 
+	this->txt_marca_mod->Clear();
+	this->txt_anio_mod->Clear();
+	this->txt_placa_mod->Clear();
+	this->txt_serie_mod->Clear();
+	this->txt_id_mod->Clear();
+	MessageBox::Show("Modificación realizada correctamente!");
+}
+
+
+private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void tabPage4_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void btn_eliminar_Click(System::Object^ sender, System::EventArgs^ e) {
+	String^ id = Convert::ToString(data_grid3->SelectedRows[0]->Cells[0]->Value); //seleccionamos los valores de la fila completa
+	data->AbrirConexion();
+	data->Eliminar(id);
+	data->CerrarConexion();
+	this->Consulta();
+}
+	private: System::Void data_grid3_CellClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+	String^ nombre = Convert::ToString(data_grid3->SelectedRows[0]->Cells[1]->Value);
+	String^ id = Convert::ToString(data_grid3->SelectedRows[0]->Cells[0]->Value);
+	this->label_eliminar->Text = "Se eliminará el vehiculo: " + nombre;
+	this->txt_id_el->Text = id;
+}
+};
+}
+
+DB.h:
+#pragma once
+using namespace std;
+using namespace System::Data;
+using namespace System;
+using namespace MySql::Data::MySqlClient;
+
+// clase de la base de datos
+ref class DB
+{
+private:
+	String^ connectionString;
+	MySqlConnection^ conn;
+public:
+	DB(); //constructor
+	DataTable^ getData(); //metodos
+	void AbrirConexion();
+	void CerrarConexion();
+	void Insertar(String^, String^, String^, String^, String^, String^);
+	void Modificar(String^, String^, String^, String^, String^, String^);
+	void Eliminar(String^); 
+};
+
+DB.cpp:
+
+#include "pch.h"
+#include "DB.h"
+//se aplican los metodos de la clase
+DB::DB()//se llama al metodo constructor
+{
+	this->connectionString= "datasource=localhost; username=root; password=localhost; database=proyectocrud;"; //colocamos parametros para conectar base de datos
+	this->conn = gcnew MySqlConnection(this->connectionString); //creando la conexion con MySql
+}	
+
+void DB::AbrirConexion() //metodo que abre la conexion
+{
+	this->conn->Open();
+}
+
+void DB::CerrarConexion()//metodo para cerrar la conexion
+{
+	this->conn->Close();
+}
+
+DataTable^ DB::getData() //metodo para obtener la informacion
+{
+	String^ sql = "select * from registro_de_ventas"; //seleccionamos todo de la tabla registro de ventas
+	MySqlCommand^ cursor = gcnew MySqlCommand(sql, this->conn); //hacemos el cursor
+	MySqlDataAdapter^ data = gcnew MySqlDataAdapter(cursor); //adaptador de los datos para lo que necesitamos
+	DataTable^ tabla = gcnew DataTable(); //creamos una tabla de datos
+	data->Fill(tabla); //hacemos que la tabla se llene con la informacion
+	return tabla; //retornamos la tabla
+}
+
+void DB::Insertar(String^ nombre, String^ marca, String^ serie, String^ anio_fabricacion, String^ placa, String^ motor) //metodo para insertar a la base de datos con las variables privadas
+{
+	String^ sql = "insert into registro_de_ventas(Nombre, Marca, Serie, Año, Placa,Motor) values ('" + nombre + "', '" + marca + "', '" + serie + "', '" + anio_fabricacion + "', '" + placa + "','" + motor + "')"; //indicamos que variables iran en su respectiva casilla
+	MySqlCommand^ cursor = gcnew MySqlCommand(sql, this->conn); //hacemos el cursor
+	try
+	{
+		cursor->ExecuteNonQuery();
+	}
+	catch (Exception^ e) //si hay un error se muestra un mensaje en pantalla
+	{
+		using namespace System::Windows::Forms;
+		using namespace System::Data;
+		using namespace System::Drawing;
+		MessageBox::Show(e->Message);
+	}
+}
+
+void DB::Modificar(String^ nombre, String^ marca, String^ serie, String^ anio_fabricacion, String^ placa, String^ ref) //metodo para modificar en la base de datos las variables privadas
+{
+	String^ sql = "update registro_de_ventas set Nombre = '" + nombre + "', Marca = '" + marca + "', Serie = '" + serie + "', Año = '" + anio_fabricacion + "', Placa = '" + placa + "' where Id = '" + ref + "'"; //indicamos que variables se modificaran respectivamente
+	MySqlCommand^ cursor = gcnew MySqlCommand(sql, this->conn); //hacemos el cursor
+	try
+	{
+		using namespace System::Windows::Forms;
+		using namespace System::Data;
+		using namespace System::Drawing;
+		cursor->ExecuteNonQuery();
+	}
+	catch (Exception^ e) //si hay un error se muestra un mensaje en pantalla
+	{
+		using namespace System::Windows::Forms;
+		using namespace System::Data;
+		using namespace System::Drawing;
+		MessageBox::Show(e->Message);
+	}
+}
+
+void DB::Eliminar(String^ id)
+{
+	String^ sql = "delete from registro_de_ventas where Id = '" + id + "' ";
+	MySqlCommand^ cursor = gcnew MySqlCommand(sql, this->conn); //hacemos el cursor
+	try
+	{
+		using namespace System::Windows::Forms;
+		using namespace System::Data;
+		using namespace System::Drawing;
+		cursor->ExecuteNonQuery();
+		using namespace System::Windows::Forms;
+		using namespace System::Data;
+		using namespace System::Drawing;
+		MessageBox::Show("Eliminacion completada correctamente!");
+	}
+	catch (Exception^ e) //si hay un error se muestra un mensaje en pantalla
+	{
+		using namespace System::Windows::Forms;
+		using namespace System::Data;
+		using namespace System::Drawing;
+		MessageBox::Show(e->Message);
+	}
+}
+
+
